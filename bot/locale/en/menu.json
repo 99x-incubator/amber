@@ -1,0 +1,10 @@
+{
+    "menu_items": "Log work|Set a reminder",
+    "menu_prompt": "What do you want to do today?",
+    "menu_reprompt": "What do you want to do?",
+    "menu_prompt_retry": "I didn't understand you. Can you choose from these?",
+    "menu_cancel": "Maybe it's not the right time for a conversation. Let's try again later!",
+    "menu_repeat_prompt": "Do you want to do something else?",
+    "menu_exit": "See you later!",
+    "menu_trigger": "This will take you back to the menu. Are you sure?"
+}

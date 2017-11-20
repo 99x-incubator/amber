@@ -1,0 +1,11 @@
+{
+  "name": "amber",
+  "version": "1.0.0",
+  "description": "A bot for Skype written using the Microsoft Bot Framework",
+  "author": "Rangitha Kuruppu",
+  "license": "MIT",
+  "dependencies": {
+    "botbuilder": "^3.11.0",
+    "restify": "^6.3.2"
+  }
+}
