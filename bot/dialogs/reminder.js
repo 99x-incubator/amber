@@ -3,7 +3,7 @@
 const builder = require('botbuilder');
 const library = new builder.Library('reminder');
 
-library.dialog('/', [
+library.dialog('root', [
     (session) => {
         session.endDialog('intro');
     }

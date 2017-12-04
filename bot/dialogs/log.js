@@ -3,7 +3,7 @@
 const builder = require('botbuilder');
 const library = new builder.Library('log');
 
-library.dialog('/', [
+library.dialog('root', [
     (session) => {
         session.endDialog('not_implemented');
     }

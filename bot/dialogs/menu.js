@@ -8,7 +8,7 @@ const menu = [
     'reminder'
 ];
 
-library.dialog('/', [
+library.dialog('root', [
     (session, args) => {
         const menuPrompt = (args && args.reprompt) ? 'menu_reprompt' : 'menu_prompt';
         const menuItems = session.localizer.gettext(session.preferredLocale(), 'menu_items', 'menu');
@@ -20,13 +20,13 @@ library.dialog('/', [
         const { ResumeReason } = builder;
 
         if (ResumeReason[results.resumed] === ResumeReason.notCompleted) {
-            session.endConversation('menu_cancel');
+            session.endConversation('menu_prompt_cancel');
         }
         else if (results.response) {
             const { index } = results.response;
             const targetDialog = menu[index];
 
-            session.beginDialog(`${targetDialog}:/`);
+            session.beginDialog(`${targetDialog}:root`);
         }
     },
     (session, results) => {
@@ -34,7 +34,7 @@ library.dialog('/', [
     },
     (session, results) => {
         if (results.response) {
-            session.replaceDialog('/', { reprompt: true });
+            session.replaceDialog('root', { reprompt: true });
         }
         else {
             session.endConversation('menu_exit');
