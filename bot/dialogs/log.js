@@ -51,10 +51,16 @@ library.dialog('uploadFile', [
             if (attachments.length === 1) {
                 const attachment = attachments[0];
 
-                session.endDialogWithResult({
-                    resumed: ResumeReason.completed,
-                    response: attachment
-                });
+                if (attachment.contentType === 'text/plain') {
+                    session.endDialogWithResult({
+                        resumed: ResumeReason.completed,
+                        response: attachment
+                    });
+                }
+                else {
+                    session.dialogData.attempt = ++attempt;
+                    session.replaceDialog('uploadFile', { message: 'upload_unknown', attempt: attempt });
+                }
             }
             else if (attachments.length > 1) {
                 session.dialogData.attempt = ++attempt;
