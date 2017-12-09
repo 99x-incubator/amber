@@ -5,12 +5,10 @@ const library = new builder.Library('log');
 
 library.dialog('root', [
     (session, args) => {
-        session.beginDialog('uploadFile');
+        session.beginDialog('log:uploadFile');
     },
     (session, results) => {
-        const { ResumeReason } = builder;
-
-        if (ResumeReason[results.resumed] === 'notCompleted') {
+        if (results.resumed === builder.ResumeReason.notCompleted) {
             session.endConversation('cancel_conversation');
         }
         else {
@@ -19,59 +17,73 @@ library.dialog('root', [
         }
     },
     (session, results) => {
-        const { ResumeReason } = builder;
-
         if (results.response) {
-            session.replaceDialog('root', { reprompt: true });
+            session.replaceDialog('log:root', { reprompt: true });
         }
         else {
-            const exitPrompt = (ResumeReason[results.resumed] === 'notCompleted') ?
+            const message = (results.resumed === builder.ResumeReason.notCompleted) ?
                 'cancel_conversation' : 'complete_conversation';
-            session.endConversation(exitPrompt);
+
+            session.endConversation(message);
         }
     }
 ]);
 
 library.dialog('uploadFile', [
     (session, args) => {
-        const uploadPrompt = (args && args.message) ? args.message : 'upload_prompt',
-            attempt = (args && args.attempt) ? args.attempt : 1;
+        const prompt = (args && args.prompt) ? args.prompt : 'upload_prompt';
 
-        session.dialogData.attempt = attempt;
-
-        builder.Prompts.attachment(session, uploadPrompt,
+        builder.Prompts.attachment(session, prompt,
             { maxRetries: 1, retryPrompt: 'upload_prompt_retry' });
     },
-    (session, results) => {
-        const { ResumeReason } = builder,
-            attachments = results.response;
-        let attempt = session.dialogData.attempt;
-
-        if (attachments && attempt < 2) {
-            if (attachments.length === 1) {
-                const attachment = attachments[0];
-
-                if (attachment.contentType === 'text/plain') {
-                    session.endDialogWithResult({
-                        resumed: ResumeReason.completed,
-                        response: attachment
-                    });
-                }
-                else {
-                    session.dialogData.attempt = ++attempt;
-                    session.replaceDialog('uploadFile', { message: 'upload_unknown', attempt: attempt });
-                }
-            }
-            else if (attachments.length > 1) {
-                session.dialogData.attempt = ++attempt;
-                session.replaceDialog('uploadFile', { message: 'upload_multiple', attempt: attempt });
-            }
-        }
-        else {
+    (session, results, next) => {
+        if (results.resumed === builder.ResumeReason.notCompleted) {
             session.endDialogWithResult({
                 resumed: ResumeReason.notCompleted
             });
         }
+        else {
+            session.dialogData.attachments = results.response;
+            next();
+        }
+    },
+    (session, results, next) => {
+        const attachments = session.dialogData.attachments;
+
+        if (!attachments) {
+            session.replaceDialog('log:uploadFile', { prompt: 'upload_prompt_retry' });
+        }
+        else {
+            next();
+        }
+    },
+    (session, results, next) => {
+        const attachments = session.dialogData.attachments;
+
+        if (attachments.length !== 1) {
+            session.replaceDialog('log:uploadFile', { prompt: 'upload_multiple' });
+        }
+        else {
+            next();
+        }
+    },
+    (session, results, next) => {
+        const attachment = session.dialogData.attachments[0];
+
+        if (attachment.contentType !== 'text/plain') {
+            session.replaceDialog('log:uploadFile', { prompt: 'upload_unknown' });
+        }
+        else {
+            next();
+        }
+    },
+    (session, results, next) => {
+        const attachment = session.dialogData.attachments[0];
+
+        session.endDialogWithResult({
+            resumed: builder.ResumeReason.completed,
+            response: attachment
+        });
     }
 ]);
 
