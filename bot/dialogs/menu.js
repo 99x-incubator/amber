@@ -8,25 +8,23 @@ const menu = [
     'reminder'
 ];
 
-library.dialog('/', [
+library.dialog('root', [
     (session, args) => {
-        const menuPrompt = (args && args.reprompt) ? 'menu_reprompt' : 'menu_prompt';
-        const menuItems = session.localizer.gettext(session.preferredLocale(), 'menu_items', 'menu');
+        const menuPrompt = (args && args.reprompt) ? 'menu_reprompt' : 'menu_prompt',
+            menuItems = session.localizer.gettext(session.preferredLocale(), 'menu_items', 'menu');
 
         builder.Prompts.choice(session, menuPrompt, menuItems,
-            { listStyle: builder.ListStyle.button, maxRetries: 1, retryPrompt: 'menu_prompt_retry', });
+            { listStyle: builder.ListStyle.button, maxRetries: 1, retryPrompt: 'menu_retry', });
     },
     (session, results) => {
-        const { ResumeReason } = builder;
-
-        if (ResumeReason[results.resumed] === ResumeReason.notCompleted) {
-            session.endConversation('menu_cancel');
+        if (results.resumed === builder.ResumeReason.notCompleted) {
+            session.endConversation('cancel_conversation');
         }
         else if (results.response) {
-            const { index } = results.response;
-            const targetDialog = menu[index];
+            const { index } = results.response,
+                targetDialog = menu[index];
 
-            session.beginDialog(`${targetDialog}:/`);
+            session.beginDialog(`${targetDialog}:root`);
         }
     },
     (session, results) => {
@@ -34,10 +32,10 @@ library.dialog('/', [
     },
     (session, results) => {
         if (results.response) {
-            session.replaceDialog('/', { reprompt: true });
+            session.replaceDialog('menu:root', { reprompt: true });
         }
         else {
-            session.endConversation('menu_exit');
+            session.endConversation('complete_conversation');
         }
     }
 ]).triggerAction({

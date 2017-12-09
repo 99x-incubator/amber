@@ -9,7 +9,7 @@ const connector = new builder.ChatConnector({
 
 const bot = new builder.UniversalBot(connector, [
     (session) => {
-        session.beginDialog('menu:/');
+        session.beginDialog('menu:root');
     },
     (session, results)=> {
         session.endConversation();
