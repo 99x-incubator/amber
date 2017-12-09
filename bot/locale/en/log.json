@@ -1,10 +1,10 @@
 {
-    "log_repeat_prompt": "Do you want to log more work?",
-    "log_repeat_prompt_retry": "Yes? No?",
-    "complete_conversation": "See you later!",
-    "upload_prompt": "Can you upload a file with the work logs?",
-    "upload_prompt_retry": "You have to upload a file. Try again!",
     "cancel_conversation": "Maybe it's not the right time for this. Let's try again later!",
-    "upload_multiple": "Sorry, I can only handle one file at a time. Try again!",
-    "upload_unknown": "Sorry, I only know how to read plain text files. Try again!"
+    "complete_conversation": "See you later!",
+    "log_repeat_prompt": "Do you want to log more work?",
+    "log_repeat_retry": "Yes? No?",
+    "upload_prompt": "Can you upload a file with the work logs?",
+    "upload_retry": "You have to upload a file. Try again!",
+    "uploaded_multiple": "Sorry, I can only handle one file at a time. Try again!",
+    "uploaded_unrecognized": "Sorry, I only know how to read plain text files. Try again!"
 }

@@ -14,11 +14,11 @@ library.dialog('root', [
             menuItems = session.localizer.gettext(session.preferredLocale(), 'menu_items', 'menu');
 
         builder.Prompts.choice(session, menuPrompt, menuItems,
-            { listStyle: builder.ListStyle.button, maxRetries: 1, retryPrompt: 'menu_prompt_retry', });
+            { listStyle: builder.ListStyle.button, maxRetries: 1, retryPrompt: 'menu_retry', });
     },
     (session, results) => {
         if (results.resumed === builder.ResumeReason.notCompleted) {
-            session.endConversation('menu_prompt_cancel');
+            session.endConversation('cancel_conversation');
         }
         else if (results.response) {
             const { index } = results.response,
@@ -35,7 +35,7 @@ library.dialog('root', [
             session.replaceDialog('menu:root', { reprompt: true });
         }
         else {
-            session.endConversation('menu_exit');
+            session.endConversation('complete_conversation');
         }
     }
 ]).triggerAction({
