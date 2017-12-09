@@ -39,7 +39,7 @@ library.dialog('uploadFile', [
     (session, results, next) => {
         if (results.resumed === builder.ResumeReason.notCompleted) {
             session.endDialogWithResult({
-                resumed: ResumeReason.notCompleted
+                resumed: builder.ResumeReason.notCompleted
             });
         }
         else {
