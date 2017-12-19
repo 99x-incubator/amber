@@ -1,20 +1,33 @@
 'use strict';
 
 const builder = require('botbuilder');
+const fileReader = require('../services/fileReader');
 const library = new builder.Library('log');
 
 library.dialog('root', [
     (session, args) => {
         session.beginDialog('log:uploadFile');
     },
-    (session, results) => {
+    (session, results, next) => {
         if (results.resumed === builder.ResumeReason.notCompleted) {
             session.endConversation('cancel_conversation');
         }
         else {
-            builder.Prompts.confirm(session, 'log_repeat_prompt',
-                { maxRetries: 1, retryPrompt: 'log_repeat_retry' });
+            const attachment = results.response,
+                readFile = fileReader.read(session, attachment);
+
+            readFile.then((contents) => {
+                session.send(contents);
+                next();
+            }).catch((error) => {
+                session.send('reading_failed');
+                next();
+            });
         }
+    },
+    (session, results) => {
+        builder.Prompts.confirm(session, 'log_repeat_prompt',
+            { maxRetries: 1, retryPrompt: 'log_repeat_retry' });
     },
     (session, results) => {
         if (results.response) {
@@ -84,6 +97,15 @@ library.dialog('uploadFile', [
             resumed: builder.ResumeReason.completed,
             response: attachment
         });
+    }
+]);
+
+library.dialog('readFile', [
+    (session, args) => {
+        const { file } = args;
+
+        builder.Prompts.attachment(session, prompt,
+            { maxRetries: 1, retryPrompt: 'upload_retry' });
     }
 ]);
 
