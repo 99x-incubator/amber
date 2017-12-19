@@ -3,6 +3,7 @@
     "complete_conversation": "See you later!",
     "log_repeat_prompt": "Do you want to log more work?",
     "log_repeat_retry": "Yes? No?",
+    "reading_failed": "Something went wrong while reading the file!",
     "upload_prompt": "Can you upload a file with the work logs?",
     "upload_retry": "You have to upload a file. Try again!",
     "uploaded_multiple": "Sorry, I can only handle one file at a time. Try again!",

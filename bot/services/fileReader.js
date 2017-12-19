@@ -11,7 +11,7 @@ exports.read = function (session, attachment) {
 
     return downloadFile.then((response) => {
         const buffer = Buffer.from(JSON.parse(response).data);
-        
+
         return buffer.toString('utf-8');
     }).catch((error) => {
         throw error;
